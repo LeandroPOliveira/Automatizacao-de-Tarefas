@@ -12,7 +12,7 @@ class ProvisaoReceita:
         self.janela.geometry('600x600')
         self.frame1 = Frame(self.janela, height=600, width=600, bg='white').place(x=0, y=0)
         self.borda = Canvas(self.janela, height=400, width=400).place(x=100, y=50)
-        self.label = Label(self.frame1, text='Consolidado Provisão Receita', font=('arial', 16, 'bold'), bg='white').\
+        self.label = Label(self.frame1, text='Consolidado Provisão Automação-de-Tarefas', font=('arial', 16, 'bold'), bg='white').\
             place(x=130, y=100)
 
         # botão procurar
@@ -22,7 +22,7 @@ class ProvisaoReceita:
         self.entrada_origem.place(x=120, y=180, width=200)
 
         # botão salvar arquivo convertido
-        self.label_resumo = Label(self.frame1, text='Resumo Provisão da Receita').place(x=120, y=230)
+        self.label_resumo = Label(self.frame1, text='Resumo Provisão da Automação-de-Tarefas').place(x=120, y=230)
         self.btn_resumo = Button(self.frame1, text='Salvar como', width=10, command=self.salvar).place(x=350, y=260)
         self.entrada_resumo = Entry(self.frame1, bd=1)
         self.entrada_resumo.place(x=120, y=260, width=200)
@@ -129,7 +129,7 @@ class ProvisaoReceita:
 
         tabela_nova = pd.DataFrame({'Segmento': tabela[5], 'Nº de Clientes': tabela[9], 'Volume não Faturado': [float(i) for i in tabela[6]],
                                     'Forcecimento de GN': [float(i) for i in tabela[8]],
-                                    'Receita não Faturada': [float(i) for i in tabela[7]],
+                                    'Automação-de-Tarefas não Faturada': [float(i) for i in tabela[7]],
                                     'DESCONTO': [float(i) for i in tabela[2]], 'ICMS': [float(i) for i in tabela[3]],
                                     'ICMS/ST': [float(i) for i in tabela[4]], 'PIS': [float(i) for i in tabela[0]],
                                     'COFINS': [float(i) for i in tabela[1]]})

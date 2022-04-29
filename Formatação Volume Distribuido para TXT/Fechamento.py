@@ -67,6 +67,7 @@ class FechamentoVolumes:
                         'Nome do Cliente', 'Município', 'Volume de Gás Distribuido']]
         self.data.replace(to_replace='GUAIÇARA', value ='GUAICARA', inplace=True)
         self.data.replace(to_replace='AMÉRICO BRASILIENSE', value='AMERICO BRASILIENSE', inplace=True)
+        self.data.replace(to_replace='ITÁPOLIS', value='ITAPOLIS', inplace=True)
         self.data.dropna(inplace=True)
         self.data.to_csv(self.local, sep=';', index=False, header=None, encoding='utf8')
         messagebox.showinfo('', 'Relatório gerado com sucesso!')
