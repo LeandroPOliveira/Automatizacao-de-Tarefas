@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 
-base = pd.read_excel('base03.xlsx', dtype={'Subnº': str})
+base = pd.read_excel('base5.xlsx', dtype={'Subnº': str})
 tabela_anla = pd.read_excel('ANLA.xlsx', dtype={'ANLN2': str, 'ANLN1': str, 'AIBN1': str, 'AIBN2': str})
 tabela_anlh = pd.read_excel('ANLH.xlsx', dtype={'ANLN1': str})
 
@@ -30,7 +30,7 @@ base['POSID'] = np.where(base['POSID'].isnull(), base['EAUFN'], base['POSID'])
 base = base.drop(columns=['Num2', 'Denominação do imobilizado', 'Moeda', 'AIBN1', 'AIBN2', 'EAUFN'], axis=1)
 
 base = base.rename(columns={'ANLKL': 'Classe Imobilizado', 'Incorporação em': 'Data Inic. Deprec.',
-                            '      ValAquis.': 'Vlr. Aquisi.', 'TXT50': 'Descrição normalizada',
+                            'ValAquis.': 'Vlr. Aquisi.', 'TXT50': 'Descrição normalizada',
                             'TXA50': 'Descrição (Adicional)',
                             'ANLHTXT': 'Descrição Livre', 'MENGE': 'Quant.', 'MEINS': 'U.M.', 'SERNR': 'Nº Série',
                             'INVNR': 'Nº Inventário', 'ORD41': 'Localidade', 'ORD42': 'SDGN', 'ORD43': 'Tipo Administ.',
@@ -52,7 +52,7 @@ base['Centro Custo'] = np.where(base['Classe Imobilizado'].isin(centro_custo_ti)
 base = base[['Imobilizado', 'Subnº', 'Classe Imobilizado', 'Descrição normalizada', 'Descrição (Adicional)',
              'Descrição Livre', 'Quant.', 'U.M.', 'Nº Série', 'Nº Inventário', 'OSI', 'Centro Custo', 'Localidade', 'SDGN',
              'Tipo Administ.',  'Tipo de Material', 'Diâmetro', 'Data Inic. Deprec.', 'Vlr. Aquisi.',
-             'Depreciação ac.', ' Valor contábil']]
+             'Depreciação ac.', 'Valor contábil']]
 
 base['Imobilizado'] = base['Imobilizado'].astype(dtype=int, errors='ignore')
 base['Subnº'] = base['Subnº'].astype(int)
