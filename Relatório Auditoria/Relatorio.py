@@ -9,22 +9,24 @@ pd.set_option('display.max_columns', 10)
 
 def ativo_geral(data):
     data = pd.DataFrame(data)
-    colunas = [0, 1, 4, 5, 8, 9, 10, 12, 25, 26]
+    colunas = [17]
     data.drop(data.columns[colunas], axis=1, inplace=True)
+    data.rename(columns={'Classe imobilizado': 'Classe', 'Incorporação em': 'Dt.incorp.'}, inplace=True)
+    print(data.columns)
     data = data[data['Classe'].notnull()]
     data = data[~data['Classe'].str.contains('Classe')]
     data['Dt.incorp.'] = data['Dt.incorp.'].apply(lambda x: pd.to_datetime(x, format='%d.%m.%Y'))
     data = data.sort_values(by=['Dt.incorp.'])
     data.drop(data.tail(6).index, inplace=True)
     data = data[data['Classe'] != 'IES-50']
-    numeros = ['     CAP InícEx', '      Dep.InícEx', ' ValContIníExer', '        Aquis.', '         Baixa',
-               '     Transfer.', ' Deprec.do ano', '    Baixa dep.', '  Transf.depr.', '     CAP atuais',
-               '  Depr.acumulada', '   ValCon.atual']
+    numeros = ['    CAP InícEx', '    Dep.InícEx', 'ValContIníExer', '        Aquis.', '         Baixa',
+               '     Transfer.', 'Deprec.do ano', '    Baixa dep.', '  Transf.depr.', '    CAP atuais',
+               'Depr.acumulada', '  ValCon.atual']
     data[numeros] = data[numeros].apply(pd.to_numeric, errors='coerce')
     return data
 
 
-dados_inicio = ativo_geral(pd.read_excel('Audit.xlsx', skiprows=8))
+dados_inicio = ativo_geral(pd.read_excel('Audit.xlsx'))
 
 
 def define_datas(mes):
@@ -40,7 +42,7 @@ mes_relatorio = define_datas(input('Digite o mês (mm-aaaa): '))
 
 
 def busca_estoque(estoque):
-    estoque.rename(columns={'SALDO EM 31.12.2021': 'ANTERIOR', 'SALDO EM 31.03.2022': 'ATUAL'}, inplace=True)
+    estoque.rename(columns={'SALDO EM 31.12.2021': 'ANTERIOR', 'SALDO EM 30.06.2022': 'ATUAL'}, inplace=True)
     global estoque_anterior
     global estoque_atual
     estoque_anterior = estoque['ANTERIOR'].loc[180]
@@ -52,7 +54,7 @@ def busca_estoque(estoque):
 saldo_estoque = busca_estoque(
     pd.read_excel('G:\GECOT\ATIVO FINANCEIRO\ATIVO FINANCEIRO_' + str(mes_relatorio.year) + '\\'
                   + str(mes_relatorio.strftime('%m')) + '_' + str(mes_relatorio.year) +
-                  '\Ativo financeiro - 03_2022.xlsx', sheet_name='MAPA', usecols=[7, 8]))
+                  '\Ativo financeiro - 06_2022.xlsx', sheet_name='MAPA', usecols=[7, 8]))
 
 
 def ativo_ano_anterior(anterior):
@@ -65,13 +67,13 @@ def ativo_ano_anterior(anterior):
         novo.insert(0, '-')
     novo = pd.DataFrame(novo).transpose()
     anterior.loc['TOTAL'] = anterior.iloc[:, 4:].sum(axis=0)
-    anterior = anterior.append({'      Dep.InícEx': "Estoque", "  Depr.acumulada": "Estoque",
-                                ' ValContIníExer': estoque_anterior,
-                                '   ValCon.atual': estoque_atual}, ignore_index=True)
-    anterior = anterior.append({' ValContIníExer': estoque_anterior + anterior[' ValContIníExer'].iloc[-2],
-                                '      Dep.InícEx': exercicio_anterior,
-                                '   ValCon.atual': estoque_atual + anterior['   ValCon.atual'].iloc[-2],
-                                '  Depr.acumulada': exercicio_atual},
+    anterior = anterior.append({'    Dep.InícEx': "Estoque", "Depr.acumulada": "Estoque",
+                                'ValContIníExer': estoque_anterior,
+                                '  ValCon.atual': estoque_atual}, ignore_index=True)
+    anterior = anterior.append({'ValContIníExer': estoque_anterior + anterior['ValContIníExer'].iloc[-2],
+                                '    Dep.InícEx': exercicio_anterior,
+                                '  ValCon.atual': estoque_atual + anterior['  ValCon.atual'].iloc[-2],
+                                'Depr.acumulada': exercicio_atual},
                                ignore_index=True)
     anterior['Dt.incorp.'] = anterior['Dt.incorp.'].apply(lambda x: pd.to_datetime(x, format='%d.%m.%Y'))
     return anterior
@@ -85,13 +87,13 @@ def ativo_atual(dados_atuais):
     novo.columns = dados_atuais.columns
     dados_atuais = pd.concat([novo, dados_atuais])
     dados_atuais.loc['TOTAL'] = dados_atuais.iloc[:, 4:].sum(axis=0)
-    dados_atuais = dados_atuais.append({'      Dep.InícEx': "Estoque", "  Depr.acumulada": "Estoque",
-                                        ' ValContIníExer': estoque_anterior,
-                                        '   ValCon.atual': estoque_atual}, ignore_index=True)
-    dados_atuais = dados_atuais.append({' ValContIníExer': estoque_anterior + dados_atuais[' ValContIníExer'].iloc[-2],
-                                        '      Dep.InícEx': exercicio_anterior,
-                                        '   ValCon.atual': estoque_atual + dados_atuais['   ValCon.atual'].iloc[-2],
-                                        '  Depr.acumulada': exercicio_atual},
+    dados_atuais = dados_atuais.append({'    Dep.InícEx': "Estoque", "Depr.acumulada": "Estoque",
+                                        'ValContIníExer': estoque_anterior,
+                                        '  ValCon.atual': estoque_atual}, ignore_index=True)
+    dados_atuais = dados_atuais.append({'ValContIníExer': estoque_anterior + dados_atuais['ValContIníExer'].iloc[-2],
+                                        '    Dep.InícEx': exercicio_anterior,
+                                        '  ValCon.atual': estoque_atual + dados_atuais['  ValCon.atual'].iloc[-2],
+                                        'Depr.acumulada': exercicio_atual},
                                        ignore_index=True)
     dados_atuais['Dt.incorp.'] = dados_atuais['Dt.incorp.'].apply(lambda x: pd.to_datetime(x, format='%d.%m.%Y'))
     return dados_atuais
@@ -102,7 +104,7 @@ base_atual = ativo_atual(dados_inicio)
 
 def ativos_depreciados(depreciados):
     depreciados = depreciados[depreciados['Classe'].str.contains('IES')]
-    depreciados = depreciados[depreciados['   ValCon.atual'] == 0]
+    depreciados = depreciados[depreciados['  ValCon.atual'] == 0]
     return depreciados
 
 

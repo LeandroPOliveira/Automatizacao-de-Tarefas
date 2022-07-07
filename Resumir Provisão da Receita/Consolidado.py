@@ -129,7 +129,7 @@ class ProvisaoReceita:
 
         tabela_nova = pd.DataFrame({'Segmento': tabela[5], 'Nº de Clientes': tabela[9], 'Volume não Faturado': [float(i) for i in tabela[6]],
                                     'Forcecimento de GN': [float(i) for i in tabela[8]],
-                                    'Automação-de-Tarefas não Faturada': [float(i) for i in tabela[7]],
+                                    'Receita não Faturada': [float(i) for i in tabela[7]],
                                     'DESCONTO': [float(i) for i in tabela[2]], 'ICMS': [float(i) for i in tabela[3]],
                                     'ICMS/ST': [float(i) for i in tabela[4]], 'PIS': [float(i) for i in tabela[0]],
                                     'COFINS': [float(i) for i in tabela[1]]})

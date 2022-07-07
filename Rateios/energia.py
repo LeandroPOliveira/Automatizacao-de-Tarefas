@@ -8,8 +8,8 @@ razao['Nota'] = razao['Texto'].str.slice(10, 19)
 
 
 dados = [[], [], [], []]
-for nota in os.listdir('G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\05 - MAIO\ENERGIA ELÉTRICA'):
-    diretorio = 'G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\05 - MAIO\ENERGIA ELÉTRICA'
+for nota in os.listdir('G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\06- JUNHO\ENERGIA ELÉTRICA'):
+    diretorio = 'G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\06- JUNHO\ENERGIA ELÉTRICA'
     if nota.endswith('.pdf'):
         conta = parser.from_file(os.path.join(diretorio, nota))
         linha_conta = conta['content'].splitlines()
@@ -24,7 +24,8 @@ for nota in os.listdir('G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\05 - MAIO\E
             if 'DÉBITOS' in row:
                 outros_deb = float(linha_conta[index+2].split(' ')[6].replace(',', '.'))
             if 'Total a Pagar (R$)' in row:
-                vr_total = float(linha_conta[index+1].strip().replace(',', '.'))
+                vr_total = linha_conta[index + 1].strip().replace('.', '')
+                vr_total = float(vr_total.replace(',', '.'))
                 imposto = (vr_total - outros_deb) * 0.0925
                 vr_a_pagar = vr_total - imposto
                 dados[2].append(round(vr_a_pagar, 2))
@@ -32,7 +33,7 @@ for nota in os.listdir('G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\05 - MAIO\E
 dados = pd.DataFrame(dados).T
 dados.columns = ['Endereco', 'Cidade', 'Valor', 'Nota']
 
-dados_a_completar = pd.merge(razao, dados[['Nota', 'Cidade']], on=['Nota'], how='left')
+dados_a_completar = pd.merge(razao, dados[['Nota', 'Endereco', 'Cidade']], on=['Nota'], how='left')
 
 
 # dados.to_excel('energia.xlsx', index=False)
