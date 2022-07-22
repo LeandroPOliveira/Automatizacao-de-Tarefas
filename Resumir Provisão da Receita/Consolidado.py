@@ -8,15 +8,18 @@ import tkinter.messagebox
 class ProvisaoReceita:
 
     def __init__(self, janela):
+        self.local2 = None
+        self.local = None
+        self.dados = None
         self.janela = janela
         self.janela.geometry('600x600')
         self.frame1 = Frame(self.janela, height=600, width=600, bg='white').place(x=0, y=0)
         self.borda = Canvas(self.janela, height=400, width=400).place(x=100, y=50)
-        self.label = Label(self.frame1, text='Consolidado Provisão Automação-de-Tarefas', font=('arial', 16, 'bold'), bg='white').\
-            place(x=130, y=100)
+        self.label = Label(self.frame1, text='Consolidado Provisão Automação-de-Tarefas', font=('arial', 16, 'bold'),
+                     bg='white').place(x=130, y=100)
 
         # botão procurar
-        self.origem = Label(self.frame1, text='Abrir Arquivo Origem ".CSV"').place(x=120, y=150)
+        Label(self.frame1, text='Abrir Arquivo Origem ".CSV"').place(x=120, y=150)
         self.btn_origem = Button(self.frame1, text='Procurar', width=10, command=self.abrir).place(x=350, y=180)
         self.entrada_origem = Entry(self.frame1, bd=1)
         self.entrada_origem.place(x=120, y=180, width=200)
@@ -28,7 +31,7 @@ class ProvisaoReceita:
         self.entrada_resumo.place(x=120, y=260, width=200)
 
         # botão salvar arquivo convertido GEFIN
-        self.label_resumo2 = Label(self.frame1, text='Resumo GEFIN').place(x=120, y=290)
+        Label(self.frame1, text='Resumo GEFIN').place(x=120, y=290)
         self.btn_resumo2 = Button(self.frame1, text='Salvar como', width=10, command=self.salvar_2).place(x=350, y=320)
         self.entrada_resumo2 = Entry(self.frame1, bd=1)
         self.entrada_resumo2.place(x=120, y=320, width=200)
@@ -43,36 +46,32 @@ class ProvisaoReceita:
         self.entrada_origem.delete(0, END)
         self.entrada_origem.insert(0, self.dados)
 
-
-
     # selecionar local do arquivo convertido
     def salvar(self):
         files = [("Excel files", "*.xlsx")]
-        self.local = asksaveasfilename(filetypes=files, defaultextension=files)
+        self.local = asksaveasfilename(filetypes=files, defaultextension=files[0][1])
         self.alterado = self.entrada_resumo.insert(0, self.local)
 
     def salvar_2(self):
         files = [("Excel files", "*.xlsx")]
-        self.local2 = asksaveasfilename(filetypes=files, defaultextension=files)
+        self.local2 = asksaveasfilename(filetypes=files, defaultextension=files[0][1])
         self.alterado2 = self.entrada_resumo2.insert(0, self.local2)
-
 
     def calcular(self):
         dataset = pd.read_csv(self.dados, sep=';', decimal=',', header=None)
         pd.options.display.float_format = "{:,.2f}".format
         dados = pd.DataFrame(dataset)
-        ''
 
-        dados.columns = ['cliente', 'nome', 'cidade', 'segmento', 'vol prov ini', 'vol prov mes', 'vol prov fin', 'rec prov ini', 'rec prov mes',
-                         'rec prov fin', 'vol fat ini', 'vol fat mes', 'vol fat fin', 'rec fat ini', 'rec fat mes', 'rec fat fin', 'vol ñ fat',
-                         'rec ñ fat', 'pis', 'cofins', 'desconto', 'icms', 'icms/st']
+        dados.columns = ['cliente', 'nome', 'cidade', 'segmento', 'vol prov ini', 'vol prov mes', 'vol prov fin',
+                         'rec prov ini', 'rec prov mes', 'rec prov fin', 'vol fat ini', 'vol fat mes', 'vol fat fin',
+                         'rec fat ini', 'rec fat mes', 'rec fat fin', 'vol ñ fat', 'rec ñ fat', 'pis', 'cofins',
+                         'desconto', 'icms', 'icms/st']
 
         dados.index = ['linha' + str(i) for i in range(len(dados))]
 
         novo = pd.DataFrame(dados)
 
         novo['for de gn'] = novo.apply(lambda x: x['rec ñ fat'] - x['desconto'] + x['icms/st'], axis=1)
-
 
         sistema_2 = ['PORTO FERREIRA', 'SAO CARLOS', 'DESCALVADO']
 
@@ -84,35 +83,34 @@ class ProvisaoReceita:
 
         segmentos = list(novo['segmento'].drop_duplicates())
 
-        for l in segmentos:
-            if l == 2:
-                novo['segmento'] = novo['segmento'].replace([l], 'Res. Coletivo')
-            elif l == 1:
-                novo['segmento'] = novo['segmento'].replace([l], 'Residencial')
-            elif l == 3:
-                novo['segmento'] = novo['segmento'].replace([l], 'Comercial')
-            elif l == 4:
-                novo['segmento'] = novo['segmento'].replace([l], 'Industrial')
-            elif l == 5:
-                novo['segmento'] = novo['segmento'].replace([l], 'Industrial')
-            elif l == 6:
-                novo['segmento'] = novo['segmento'].replace([l], 'GNV')
-            elif l == 8:
-                novo['segmento'] = novo['segmento'].replace([l], 'GNV - Frotas')
-            elif l == 14:
-                novo['segmento'] = novo['segmento'].replace([l], 'GNC')
-            elif l == 17:
-                novo['segmento'] = novo['segmento'].replace([l], 'Residencial')
-            elif l == 13:
-                novo['segmento'] = novo['segmento'].replace([l], 'Industrial')
-            elif l == 12:
-                novo['segmento'] = novo['segmento'].replace([l], 'Industrial')
+        for segmento in segmentos:
+            if segmento == 2:
+                novo['segmento'] = novo['segmento'].replace([segmento], 'Res. Coletivo')
+            elif segmento == 1:
+                novo['segmento'] = novo['segmento'].replace([segmento], 'Residencial')
+            elif segmento == 3:
+                novo['segmento'] = novo['segmento'].replace([segmento], 'Comercial')
+            elif segmento == 4:
+                novo['segmento'] = novo['segmento'].replace([segmento], 'Industrial')
+            elif segmento == 5:
+                novo['segmento'] = novo['segmento'].replace([segmento], 'Industrial')
+            elif segmento == 6:
+                novo['segmento'] = novo['segmento'].replace([segmento], 'GNV')
+            elif segmento == 8:
+                novo['segmento'] = novo['segmento'].replace([segmento], 'GNV - Frotas')
+            elif segmento == 14:
+                novo['segmento'] = novo['segmento'].replace([segmento], 'GNC')
+            elif segmento == 17:
+                novo['segmento'] = novo['segmento'].replace([segmento], 'Residencial')
+            elif segmento == 13:
+                novo['segmento'] = novo['segmento'].replace([segmento], 'Industrial')
+            elif segmento == 12:
+                novo['segmento'] = novo['segmento'].replace([segmento], 'Industrial')
 
         segmentos = list(novo['segmento'].drop_duplicates())
 
         tabela = [[], [], [], [], [], [], [], [], [], []]
         tabela_ca = [[], []]
-
 
         for s in segmentos:
             tabela[0].append(novo[novo['segmento'] == s]['pis'].sum())
@@ -127,7 +125,8 @@ class ProvisaoReceita:
             tabela[9].append(novo[novo['segmento'] == s]['cliente'].count())
             tabela_ca[0].append(novo[novo['segmento'] == s]['rec prov mes'].sum())
 
-        tabela_nova = pd.DataFrame({'Segmento': tabela[5], 'Nº de Clientes': tabela[9], 'Volume não Faturado': [float(i) for i in tabela[6]],
+        tabela_nova = pd.DataFrame({'Segmento': tabela[5], 'Nº de Clientes': tabela[9], 'Volume não Faturado':
+                                    [float(i) for i in tabela[6]],
                                     'Forcecimento de GN': [float(i) for i in tabela[8]],
                                     'Receita não Faturada': [float(i) for i in tabela[7]],
                                     'DESCONTO': [float(i) for i in tabela[2]], 'ICMS': [float(i) for i in tabela[3]],
@@ -153,7 +152,6 @@ class ProvisaoReceita:
             format1 = workbook.add_format({'num_format': '#,##0.00'})
             format2 = workbook.add_format({'num_format': '0'})
 
-
             worksheet.set_column('B:B', 15, format2)
             worksheet.set_column('C:C', 15, format2)
             worksheet.set_column('D:D', 20, format1)
@@ -167,9 +165,9 @@ class ProvisaoReceita:
 
             writer.save()
 
-
         formatar_consolidado(tabela_nova)
         tkinter.messagebox.showinfo('', 'Arquivo Gerado com Sucesso!')
+
 
 if __name__=='__main__':
     janela = Tk()
