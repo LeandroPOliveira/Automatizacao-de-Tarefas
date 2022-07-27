@@ -3,8 +3,9 @@ import calendar
 from datetime import datetime
 import requests
 import json
+import win32com.client as win32
 
-wb = openpyxl.load_workbook('Folha modelo.xlsx')  # Abrir arquivo com a base
+wb = openpyxl.load_workbook(r'C:\Users\loliveira\PycharmProjects\Automacao-de-Tarefas\Automacao-de-Tarefas\Folha\Folha modelo.xlsx')  # Abrir arquivo com a base
 sheets = wb.sheetnames
 ws = wb['Plan1']
 
@@ -18,7 +19,7 @@ final_mes = calendar.monthrange(data.year, data.month)[1]
 dias = [datetime(data.year, data.month, dia) for dia in range(1, final_mes+1)]
 
 # Buscando feriados do mês pela API pela brasilapi
-url = 'https://brasilapi.com.br/api/feriados/v1/2022'
+url = f'https://brasilapi.com.br/api/feriados/v1/{data.year}'
 r = requests.get(url, timeout=None)
 dados_feriados = json.loads(r.content)
 
@@ -92,7 +93,18 @@ elif qtde_dias == 30:
     ws['J20'] = '-'
 
 
-wb.save('Folha.xlsx')
+wb.save(r'C:\Users\loliveira\PycharmProjects\Automacao-de-Tarefas\Automacao-de-Tarefas\Folha\Folha.xlsx')
 
+outlook = win32.Dispatch('outlook.application')
+# criar um email
+email = outlook.CreateItem(0)
+# configurar as informações do e-mail e selecionar o endereço pelo arquivo de texto
+email.To = 'loliveira@gasbrasiliano.com.br'
+email.Subject = "Folha de Presença"
+email.HTMLBody = f"""
+                   <p>Folha de Presença de {mes} disponível para validação.</p>
+
+                   """
+email.Send()
 
 
