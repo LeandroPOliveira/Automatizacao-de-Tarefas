@@ -3,13 +3,13 @@ import pandas as pd
 import os
 
 
-razao = pd.read_excel('razao.xlsx')
+razao = pd.read_excel('energia10.xlsx')
 razao['Nota'] = razao['Texto'].str.slice(10, 19)
 
 
 dados = [[], [], [], []]
-for nota in os.listdir('G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\06- JUNHO\ENERGIA ELÉTRICA'):
-    diretorio = 'G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\06- JUNHO\ENERGIA ELÉTRICA'
+for nota in os.listdir('G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\10 - OUTUBRO\ENERGIA ELÉTRICA'):
+    diretorio = 'G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\10 - OUTUBRO\ENERGIA ELÉTRICA'
     if nota.endswith('.pdf'):
         conta = parser.from_file(os.path.join(diretorio, nota))
         linha_conta = conta['content'].splitlines()
@@ -20,12 +20,15 @@ for nota in os.listdir('G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\06- JUNHO\E
                                                                      not in dados[3] else None
             if 'CNPJ' in row:
                 dados[0].append(linha_conta[index-4])
-                dados[1].append(linha_conta[index - 2][10:].split('-')[0])
+                dados[1].append(linha_conta[index - 2][10:].split('-')[0].strip())
             if 'DÉBITOS' in row:
                 outros_deb = float(linha_conta[index+2].split(' ')[6].replace(',', '.'))
             if 'Total a Pagar (R$)' in row:
                 vr_total = linha_conta[index + 1].strip().replace('.', '')
-                vr_total = float(vr_total.replace(',', '.'))
+                try:
+                    vr_total = float(vr_total.replace(',', '.'))
+                except ValueError:
+                    vr_total = 0.00
                 imposto = (vr_total - outros_deb) * 0.0925
                 vr_a_pagar = vr_total - imposto
                 dados[2].append(round(vr_a_pagar, 2))

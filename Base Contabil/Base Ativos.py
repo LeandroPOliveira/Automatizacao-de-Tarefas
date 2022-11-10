@@ -2,10 +2,10 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 
-base = pd.read_excel('base6.xlsx', dtype={'Subnº': str})
+base = pd.read_excel('base10.xlsx', dtype={'Subnº': str})
 tabela_anla = pd.read_excel('ANLA.xlsx', dtype={'ANLN2': str, 'ANLN1': str, 'AIBN1': str, 'AIBN2': str})
 tabela_anlh = pd.read_excel('ANLH.xlsx', dtype={'ANLN1': str})
-
+base = base.rename(columns=lambda x: x.strip())
 base = base[base['Subnº'].notnull()]
 base2 = base['Imobilizado'] + ' ' + base['Subnº']
 base.insert(loc=0, column='Num2', value=base2)
@@ -48,7 +48,6 @@ centro_custo_ti = ['IES-22', 'IES-34']
 base['Centro Custo'] = np.where(base['Classe Imobilizado'].isin(centro_custo_ti), '11330',
                                 (np.where(base['Classe Imobilizado'].isin(centro_custo_adm), '11310', '11440')))
 
-
 base = base[['Imobilizado', 'Subnº', 'Classe Imobilizado', 'Descrição normalizada', 'Descrição (Adicional)',
              'Descrição Livre', 'Quant.', 'U.M.', 'Nº Série', 'Nº Inventário', 'OSI', 'Centro Custo', 'Localidade', 'SDGN',
              'Tipo Administ.',  'Tipo de Material', 'Diâmetro', 'Data Inic. Deprec.', 'Vlr. Aquisi.',
@@ -90,7 +89,7 @@ worksheet.set_column('S:S', 14, format1)
 worksheet.set_column('T:T', 14, format1)
 worksheet.set_column('U:U', 14, format1)
 
-writer.save()
+writer.close()
 
 
 

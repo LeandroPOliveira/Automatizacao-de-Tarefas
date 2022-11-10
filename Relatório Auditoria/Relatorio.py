@@ -42,7 +42,7 @@ mes_relatorio = define_datas(input('Digite o mês (mm-aaaa): '))
 
 
 def busca_estoque(estoque):
-    estoque.rename(columns={'SALDO EM 31.12.2021': 'ANTERIOR', 'SALDO EM 30.06.2022': 'ATUAL'}, inplace=True)
+    estoque.rename(columns={'SALDO EM 31.12.2021': 'ANTERIOR', 'SALDO EM 30.09.2022': 'ATUAL'}, inplace=True)
     global estoque_anterior
     global estoque_atual
     estoque_anterior = estoque['ANTERIOR'].loc[180]
@@ -54,7 +54,7 @@ def busca_estoque(estoque):
 saldo_estoque = busca_estoque(
     pd.read_excel('G:\GECOT\ATIVO FINANCEIRO\ATIVO FINANCEIRO_' + str(mes_relatorio.year) + '\\'
                   + str(mes_relatorio.strftime('%m')) + '_' + str(mes_relatorio.year) +
-                  '\Ativo financeiro - 06_2022.xlsx', sheet_name='MAPA', usecols=[7, 8]))
+                  '\Ativo financeiro - 09_2022.xlsx', sheet_name='MAPA', usecols=[7, 8]))
 
 
 def ativo_ano_anterior(anterior):

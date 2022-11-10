@@ -5,7 +5,7 @@ import requests
 import json
 import win32com.client as win32
 
-wb = openpyxl.load_workbook(r'C:\Users\loliveira\PycharmProjects\Automacao-de-Tarefas\Automacao-de-Tarefas\Folha\Folha modelo.xlsx')  # Abrir arquivo com a base
+wb = openpyxl.load_workbook(r'C:\Users\loliveira\PycharmProjects\Fechamento\Automatizacao-de-Tarefas\Folha\Folha modelo.xlsx')  # Abrir arquivo com a base
 sheets = wb.sheetnames
 ws = wb['Plan1']
 
@@ -93,7 +93,7 @@ elif qtde_dias == 30:
     ws['J20'] = '-'
 
 
-wb.save(r'C:\Users\loliveira\PycharmProjects\Automacao-de-Tarefas\Automacao-de-Tarefas\Folha\Folha.xlsx')
+wb.save(r'C:\Users\loliveira\PycharmProjects\Fechamento\Automatizacao-de-Tarefas\Folha\Folha.xlsx')
 
 outlook = win32.Dispatch('outlook.application')
 # criar um email
