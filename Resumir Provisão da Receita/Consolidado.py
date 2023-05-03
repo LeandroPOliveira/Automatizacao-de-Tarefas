@@ -58,7 +58,7 @@ class ProvisaoReceita:
         self.alterado2 = self.entrada_resumo2.insert(0, self.local2)
 
     def calcular(self):
-        dataset = pd.read_csv(self.dados, sep=';', decimal=',', header=None)
+        dataset = pd.read_csv(self.dados, sep=';', decimal=',', header=None, encoding='latin1')
         pd.options.display.float_format = "{:,.2f}".format
         dados = pd.DataFrame(dataset)
 

@@ -1,15 +1,18 @@
 from tika import parser
 import pandas as pd
 import os
+from datetime import date
 
-
-razao = pd.read_excel('energia10.xlsx')
+razao = pd.read_excel('razao.xlsx')
 razao['Nota'] = razao['Texto'].str.slice(10, 19)
 
+mes = input('Digite o mês no formato "01 - JANEIRO": ').strip()
+ano_atual = date.today().year-1 if mes == '12 - DEZEMBRO' else date.today().year
+
+diretorio = rf'G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\{ano_atual}\\{mes}\ENERGIA ELÉTRICA'
 
 dados = [[], [], [], []]
-for nota in os.listdir('G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\10 - OUTUBRO\ENERGIA ELÉTRICA'):
-    diretorio = 'G:\GECOT\\NOTAS FISCAIS DIGITALIZADAS\\2022\\10 - OUTUBRO\ENERGIA ELÉTRICA'
+for nota in os.listdir(diretorio):
     if nota.endswith('.pdf'):
         conta = parser.from_file(os.path.join(diretorio, nota))
         linha_conta = conta['content'].splitlines()
@@ -40,4 +43,4 @@ dados_a_completar = pd.merge(razao, dados[['Nota', 'Endereco', 'Cidade']], on=['
 
 
 # dados.to_excel('energia.xlsx', index=False)
-dados_a_completar.to_excel('energia.xlsx')
+dados_a_completar.to_excel(f'energia {mes[:2]}.xlsx')
